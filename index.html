@@ -32,9 +32,9 @@ body {
 }
 
 @keyframes fall {
-    0% { transform: translateY(0); }
+    0% { transform: translate(0,0) rotate(0); }
     50% { transform: rotate(-60deg); }
-    100% { transform: translateY(400px); }
+    100% { transform: translate(0px,400px) rotate(0deg); }
 }
 </style>
 
@@ -46,27 +46,29 @@ body {
 </div>
 
 <script>
-const text = "Hello\u00A0World"; 
+let text = "Hello\u00A0World";
+
+text = text.split("\u00A0").join(" ");
+
 const title = document.getElementById("title");
 
 function startAnimation() {
     title.innerHTML = "";
-
+const totalLetters = text.length;
     text.split("").forEach((letter, i) => {
         const span = document.createElement("span");
-        span.textContent = letter;
+        span.textContent = letter === " " ? "\u00A0" : letter;
         span.style.animationDelay = `${i * 0.8}s`;
         title.appendChild(span);
     });
 
-    const total = text.length * 800 + 1500; 
-    
+    const total = totalLetters * 800 + 1500;
     setTimeout(startAnimation, total);
 }
 
-// start first cycle
 startAnimation();
 </script>
+
 
 </body>
 </html>
