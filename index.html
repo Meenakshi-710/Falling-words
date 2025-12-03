@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Falling Word Animation</title>
+
+<style>
+body {
+    background: #111;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Consolas', monospace;
+}
+
+.box {
+    width: 280px;
+    height: 280px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.title span {
+    display: inline-block;
+    font-size: 28px;
+    color: #111;
+    animation: fall 0.8s forwards ease-in;
+}
+
+@keyframes fall {
+    0% { transform: translateY(0); }
+    50% { transform: rotate(-60deg); }
+    100% { transform: translateY(400px); }
+}
+</style>
+
+</head>
+<body>
+
+<div class="box">
+    <div class="title" id="title"></div>
+</div>
+
+<script>
+const text = "Hello\u00A0World"; 
+const title = document.getElementById("title");
+
+function startAnimation() {
+    title.innerHTML = "";
+
+    text.split("").forEach((letter, i) => {
+        const span = document.createElement("span");
+        span.textContent = letter;
+        span.style.animationDelay = `${i * 0.8}s`;
+        title.appendChild(span);
+    });
+
+    const total = text.length * 800 + 1500; 
+    
+    setTimeout(startAnimation, total);
+}
+
+// start first cycle
+startAnimation();
+</script>
+
+</body>
+</html>
