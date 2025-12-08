@@ -24,17 +24,33 @@ body {
     overflow: hidden;
 }
 
+
 .title span {
     display: inline-block;
     font-size: 28px;
     color: #111;
-    animation: fall 0.8s forwards ease-in;
+}
+
+.title span.falling {
+    animation: fall 1.6s forwards ease-in;
+}
+
+.title span.rising {
+    animation: rise 1.6s forwards ease-out;
+    opacity: 0;
+    transform: translate(0px, 400px) rotate(0deg);
 }
 
 @keyframes fall {
-    0% { transform: translate(0,0) rotate(0); }
-    50% { transform: rotate(-60deg); }
-    100% { transform: translate(0px,400px) rotate(0deg); }
+    0% { transform: translate(0,0) rotate(0); opacity: 1; }
+    50% { transform: rotate(-60deg); opacity: 1; }
+    100% { transform: translate(0px,400px) rotate(0deg); opacity: 0; }
+}
+
+@keyframes rise {
+    0% { transform: translate(0px,400px) rotate(0deg); opacity: 0; }
+    50% { transform: rotate(60deg); opacity: 1; }
+    100% { transform: translate(0,0) rotate(0); opacity: 1; }
 }
 </style>
 
@@ -54,16 +70,43 @@ const title = document.getElementById("title");
 
 function startAnimation() {
     title.innerHTML = "";
-const totalLetters = text.length;
-    text.split("").forEach((letter, i) => {
+    const totalLetters = text.length;
+    const letters = text.split("");
+    
+    const spans = letters.map((letter, i) => {
         const span = document.createElement("span");
         span.textContent = letter === " " ? "\u00A0" : letter;
-        span.style.animationDelay = `${i * 0.8}s`;
         title.appendChild(span);
+        return span;
     });
-
-    const total = totalLetters * 800 + 1500;
-    setTimeout(startAnimation, total);
+    
+    spans.forEach((span, i) => {
+        span.classList.add("falling");
+        span.style.animationDelay = `${i * 0.1}s`;
+    });
+    
+    const fallDuration = 1.6; 
+    const fallDelay = (totalLetters - 1) * 0.1;
+    const totalFallTime = (fallDelay + fallDuration) * 1000;
+    
+    
+    setTimeout(() => {
+        spans.forEach((span, i) => {
+            span.classList.remove("falling");
+            span.style.opacity = '0';
+            span.style.transform = 'translate(0px, 400px) rotate(0deg)';
+            span.style.animationDelay = '0s';
+            span.classList.add("rising");
+            const reverseIndex = totalLetters - 1 - i;
+            span.style.animationDelay = `${reverseIndex * 0.1}s`;
+        });
+    }, totalFallTime);
+    
+    const riseDelay = (totalLetters - 1) * 0.1;
+    const totalRiseTime = (riseDelay + fallDuration) * 1000;
+    const totalAnimationTime = totalFallTime + totalRiseTime + 500;
+    
+    setTimeout(startAnimation, totalAnimationTime);
 }
 
 startAnimation();
